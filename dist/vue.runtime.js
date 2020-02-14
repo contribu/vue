@@ -1,6 +1,6 @@
 /*!
  * Vue.js v2.6.11
- * (c) 2014-2019 Evan You
+ * (c) 2014-2020 Evan You
  * Released under the MIT License.
  */
 (function (global, factory) {
@@ -5798,7 +5798,8 @@
 
   function sameVnode (a, b) {
     return (
-      a.key === b.key && (
+      a.key === b.key &&
+      a.asyncFactory === b.asyncFactory && (
         (
           a.tag === b.tag &&
           a.isComment === b.isComment &&
@@ -5806,7 +5807,6 @@
           sameInputType(a, b)
         ) || (
           isTrue(a.isAsyncPlaceholder) &&
-          a.asyncFactory === b.asyncFactory &&
           isUndef(b.asyncFactory.error)
         )
       )
