@@ -1,4 +1,7 @@
 import Vue from 'vue'
+import { createEmptyVNode } from 'core/vdom/vnode'
+import { createAsyncPlaceholder } from 'core/vdom/helpers'
+import { SSR_ATTR } from 'shared/constants'
 
 describe('vdom patch: edge cases', () => {
   // exposed by #3406
@@ -431,5 +434,23 @@ describe('vdom patch: edge cases', () => {
       expect(vm.$el.textContent).toMatch('1')
       expect(vm.$el.textContent).not.toMatch('Infinity')
     }).then(done)
+  })
+
+  it('should not throw when hydrated pending async component is patched by v-if="false"', done => {
+    const PendingAsyncComponent = () => new Promise(() => {})
+    const ssrAsyncComponent = document.createElement('div')
+    ssrAsyncComponent.setAttribute(SSR_ATTR, 'true')
+    const vm = new Vue({
+      data: {
+        visible: true
+      },
+      components: {
+        PendingAsyncComponent
+      },
+      template: '<pending-async-component v-if="visible"></pending-async-component>'
+    }).$mount(ssrAsyncComponent)
+
+    vm.visible = false
+    vm.$nextTick(done)
   })
 })

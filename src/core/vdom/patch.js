@@ -712,8 +712,11 @@ export function createPatchFunction (backend) {
       createElm(vnode, insertedVnodeQueue)
     } else {
       const isRealElement = isDef(oldVnode.nodeType)
+      console.log(oldVnode)
+      console.log(vnode)
       if (!isRealElement && sameVnode(oldVnode, vnode)) {
         // patch existing root node
+        console.log('patch existing root node')
         patchVnode(oldVnode, vnode, insertedVnodeQueue, null, null, removeOnly)
       } else {
         if (isRealElement) {
