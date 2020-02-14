@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { SSR_ATTR } from 'shared/constants'
 
 describe('vdom patch: edge cases', () => {
   // exposed by #3406
@@ -431,5 +432,23 @@ describe('vdom patch: edge cases', () => {
       expect(vm.$el.textContent).toMatch('1')
       expect(vm.$el.textContent).not.toMatch('Infinity')
     }).then(done)
+  })
+
+  // #11109
+  it('should not warn', () => {
+    const ssrRoot = document.createElement('div')
+    ssrRoot.setAttribute(SSR_ATTR, 'true')
+    const span = document.createElement('span')
+    span.innerText = '123'
+    ssrRoot.appendChild(span)
+
+    const vm = new Vue({
+      data: {
+        value: ''
+      },
+      template: `<div><span>123</span>{{value}}</div>`
+    }).$mount(ssrRoot)
+
+    expect('not matching server-rendered content').not.toHaveBeenWarned()
   })
 })
